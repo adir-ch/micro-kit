@@ -15,7 +15,7 @@ type basicCalcService struct{}
 
 func (b *basicCalcService) Calculate(ctx context.Context, expr string) (rs float64, err error) {
 	log.Printf("got request to calculate: %s", expr)
-	rs = eval(expr)
+	rs, err = eval(expr)
 	return rs, err
 }
 

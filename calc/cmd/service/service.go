@@ -3,6 +3,12 @@ package service
 import (
 	"flag"
 	"fmt"
+	"net"
+	http1 "net/http"
+	"os"
+	"os/signal"
+	"syscall"
+
 	endpoint "github.com/adir-ch/micro-kit/calc/pkg/endpoint"
 	http "github.com/adir-ch/micro-kit/calc/pkg/http"
 	service "github.com/adir-ch/micro-kit/calc/pkg/service"
@@ -15,13 +21,8 @@ import (
 	zipkingoopentracing "github.com/openzipkin/zipkin-go-opentracing"
 	prometheus1 "github.com/prometheus/client_golang/prometheus"
 	promhttp "github.com/prometheus/client_golang/prometheus/promhttp"
-	"net"
-	http1 "net/http"
-	"os"
-	"os/signal"
 	appdash "sourcegraph.com/sourcegraph/appdash"
 	opentracing "sourcegraph.com/sourcegraph/appdash/opentracing"
-	"syscall"
 )
 
 var tracer opentracinggo.Tracer
@@ -84,6 +85,19 @@ func Run() {
 	g := createService(eps)
 	initMetricsEndpoint(g)
 	initCancelInterrupt(g)
+
+	// register the service in etcd
+	registrar, err := etcdRegister(logger)
+	if err != nil {
+		logger.Log(err)
+		return
+	}
+
+	defer func() {
+		logger.Log("deregistering calc")
+		registrar.Deregister()
+	}()
+
 	logger.Log("exit", g.Run())
 
 }

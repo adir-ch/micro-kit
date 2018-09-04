@@ -1,5 +1,5 @@
 # Distributed Calculator
-    A distributed calculator built with Microservices using go-kit
+    A distributed calculator built with Microservices using go-kit, using etcd as service registry
 
 ## Kit CLI Commands 
  
@@ -17,3 +17,6 @@
     - Send data to the services: 
         Calc FE: curl -s -d '{"expr": "1 + 1"}' -X POST localhost:8800/calculate
         Add service: # curl -s -d '{"numbers": [1, 2, 3]}' -X POST localhost:8800/add
+
+    - etcd: 
+        Start only etcd (-d = run in the bg): # docker-compose up -d etcd 
