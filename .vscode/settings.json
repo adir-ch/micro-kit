@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.vscode": true,
+        "**/.gitignore": true,
+        "**/*.exe": true,
+        "**/*.out": true,
+        "**/*debug": true,
+        "**/*.pprof": true
+
+    }
+}

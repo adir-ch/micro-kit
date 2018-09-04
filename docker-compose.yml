@@ -1,0 +1,22 @@
+version: "2"
+services:
+  add:
+    build:
+      context: .
+      dockerfile: add/Dockerfile
+    restart: always
+    volumes:
+    - .:/go/src/github.com/adir-ch/micro-kit
+    container_name: add
+    ports:
+    - 8800:8081
+  calc:
+    build:
+      context: .
+      dockerfile: calc/Dockerfile
+    restart: always
+    volumes:
+    - .:/go/src/github.com/adir-ch/micro-kit
+    container_name: calc
+    ports:
+    - 8801:8081
