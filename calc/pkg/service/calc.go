@@ -36,18 +36,9 @@ func traverseTree(node ast.Node) (float64, error) {
 		if err != nil {
 			return 0, err
 		}
-		switch n.Op.String() {
-		case "+":
-			return (X + Y), nil // TODO: call uService Add(traverseTree(n.X), traverseTree(n.Y))
-		case "-":
-			return (X + Y), nil
-		case "*":
-			return (X + Y), nil
-		case "/":
-			return (X + Y), nil
-		default:
-			return 0, fmt.Errorf("operator not supported: %s", n.Op)
-		}
+
+		return callOp(n.Op.String(), []float64{X, Y})
+
 	case *ast.UnaryExpr:
 		return 0, fmt.Errorf("unary not supported: %v", n)
 	case *ast.BasicLit:

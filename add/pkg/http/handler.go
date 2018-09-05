@@ -4,14 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"net/http"
+
 	endpoint "github.com/adir-ch/micro-kit/add/pkg/endpoint"
 	http1 "github.com/go-kit/kit/transport/http"
-	"net/http"
 )
 
 // makeAddHandler creates the handler logic
 func makeAddHandler(m *http.ServeMux, endpoints endpoint.Endpoints, options []http1.ServerOption) {
-	m.Handle("/add", http1.NewServer(endpoints.AddEndpoint, decodeAddRequest, encodeAddResponse, options...))
+	m.Handle("/calc", http1.NewServer(endpoints.AddEndpoint, decodeAddRequest, encodeAddResponse, options...))
 }
 
 // decodeAddResponse  is a transport/http.DecodeRequestFunc that decodes a

@@ -11,7 +11,7 @@ func etcdRegister(logger log.Logger) (*sdetcd.Registrar, error) {
 	var (
 		etcdServer = "http://etcd:2379"
 		prefix     = "/services/add/"
-		instance   = "add:8080"
+		instance   = "add:8081"
 		key        = prefix + instance
 	)
 

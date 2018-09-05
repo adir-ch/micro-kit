@@ -1,6 +1,9 @@
 package service
 
-import "context"
+import (
+	"context"
+	"log"
+)
 
 // AddService describes the service.
 type AddService interface {
@@ -11,6 +14,7 @@ type AddService interface {
 type basicAddService struct{}
 
 func (b *basicAddService) Add(ctx context.Context, numbers []float64) (rs float64, err error) {
+	log.Printf("adding numbers: %v", numbers)
 	for _, n := range numbers {
 		rs += n
 	}
