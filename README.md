@@ -12,7 +12,7 @@
     - Generate Docerfile and docker compose files
         # kit generate docker - will generate a docker compose file 
 
-    - docker compose up - will run the docker images 
+    - docker-compose up - will run the docker images 
 
     - Send data to the services: 
         Calc FE: curl -s -d '{"expr": "1 + 1"}' -X POST localhost:8800/calculate
