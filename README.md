@@ -23,6 +23,6 @@
         * Query etcd: 
             version: # curl -L http://127.0.0.1:23791/version
             get all keys: # curl -L http://127.0.0.1:23791/v2/keys/?recursive=true
-            add new key: # curl http://127.0.0.1:23791/v2/keys/services/v2/add:8081/ -X PUT -d value="add:8081/calc"
+            add new key: # curl http://127.0.0.1:23791/v2/keys/services/add:8081/ -X PUT -d value="add:8081"
             find by key: # curl -L http://127.0.0.1:23791/v2/keys/services/calc/
             delete a key: #  curl http://127.0.0.1:23791/v2/keys/services/v2/add:8081/ -X DELETE
