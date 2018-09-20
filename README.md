@@ -26,3 +26,7 @@
             add new key: # curl http://127.0.0.1:23791/v2/keys/services/add:8081/ -X PUT -d value="add:8081"
             find by key: # curl -L http://127.0.0.1:23791/v2/keys/services/calc/
             delete a key: #  curl http://127.0.0.1:23791/v2/keys/services/v2/add:8081/ -X DELETE
+
+    - Postgres docker image run:
+
+        docker run -it --rm -e POSTGRES_PASSWORD='' -p 5432:5432 postgres:alpine
