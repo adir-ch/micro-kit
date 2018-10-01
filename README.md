@@ -28,5 +28,7 @@
             delete a key: #  curl http://127.0.0.1:23791/v2/keys/services/v2/add:8081/ -X DELETE
 
     - Postgres docker image run:
-
         docker run -it --rm -e POSTGRES_PASSWORD='' -p 5432:5432 postgres:alpine
+
+    - Redis docker image spinup:
+        docker run -p "6379:6379" --rm --name dwarf-redis redis:4-alpine
