@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pb;
+
+
+//The Sub service definition.
+service Sub {
+    rpc Sub (SubRequest) returns (SubReply);
+}
+
+message SubRequest {
+    double left = 1; 
+    double right = 2; 
+}
+
+message SubReply {
+    double result = 1;
+}
+
