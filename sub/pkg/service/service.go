@@ -11,8 +11,8 @@ type SubService interface {
 type basicSubService struct{}
 
 func (b *basicSubService) Sub(ctx context.Context, left float64, right float64) (rs float64, err error) {
-	// TODO implement the business logic of Sub
-	return rs, err
+	rs = left - right
+	return rs, nil
 }
 
 // NewBasicSubService returns a naive, stateless implementation of SubService.

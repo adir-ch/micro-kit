@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"errors"
+
 	endpoint "github.com/adir-ch/micro-kit/sub/pkg/endpoint"
 	pb "github.com/adir-ch/micro-kit/sub/pkg/grpc/pb"
 	grpc "github.com/go-kit/kit/transport/grpc"
@@ -18,15 +18,18 @@ func makeSubHandler(endpoints endpoint.Endpoints, options []grpc.ServerOption) g
 // gRPC request to a user-domain sum request.
 // TODO implement the decoder
 func decodeSubRequest(_ context.Context, r interface{}) (interface{}, error) {
-	return nil, errors.New("'Sub' Decoder is not impelemented")
+	req := r.(*pb.SubRequest)
+	return endpoint.SubRequest{Left: req.Left, Right: req.Right}, nil
 }
 
 // encodeSubResponse is a transport/grpc.EncodeResponseFunc that converts
 // a user-domain response to a gRPC reply.
 // TODO implement the encoder
 func encodeSubResponse(_ context.Context, r interface{}) (interface{}, error) {
-	return nil, errors.New("'Sub' Encoder is not impelemented")
+	res := r.(endpoint.SubResponse)
+	return &pb.SubReply{Result: res.Rs}, res.Err
 }
+
 func (g *grpcServer) Sub(ctx context1.Context, req *pb.SubRequest) (*pb.SubReply, error) {
 	_, rep, err := g.sub.ServeGRPC(ctx, req)
 	if err != nil {

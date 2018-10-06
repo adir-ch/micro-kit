@@ -3,6 +3,12 @@ package service
 import (
 	"flag"
 	"fmt"
+	"net"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+
 	endpoint "github.com/adir-ch/micro-kit/sub/pkg/endpoint"
 	grpc "github.com/adir-ch/micro-kit/sub/pkg/grpc"
 	pb "github.com/adir-ch/micro-kit/sub/pkg/grpc/pb"
@@ -17,13 +23,8 @@ import (
 	prometheus1 "github.com/prometheus/client_golang/prometheus"
 	promhttp "github.com/prometheus/client_golang/prometheus/promhttp"
 	grpc1 "google.golang.org/grpc"
-	"net"
-	"net/http"
-	"os"
-	"os/signal"
 	appdash "sourcegraph.com/sourcegraph/appdash"
 	opentracing "sourcegraph.com/sourcegraph/appdash/opentracing"
-	"syscall"
 )
 
 var tracer opentracinggo.Tracer
@@ -86,6 +87,19 @@ func Run() {
 	g := createService(eps)
 	initMetricsEndpoint(g)
 	initCancelInterrupt(g)
+
+	// register the service in etcd
+	registrar, err := etcdRegister(logger)
+	if err != nil {
+		logger.Log(err)
+		return
+	}
+
+	defer func() {
+		logger.Log("deregistering sub")
+		registrar.Deregister()
+	}()
+
 	logger.Log("exit", g.Run())
 
 }

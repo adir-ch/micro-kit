@@ -1,6 +1,18 @@
 # Distributed Calculator
     A distributed calculator built with Microservices using go-kit, using etcd as service registry
 
+## Go-Kit architecture 
+
+    - Setup
+        1. Setup is done in the cmd/service 
+        2. Hook all endpoints + middleware in service.go
+
+    - Request flow: client req -> handler -> endpoint -> service (logic) -> endpoint -> handler -> client res
+        1. Request is received by the handler (transport specific)
+        2. The transport handler will convert / deserialize the data and will call the endpoint. 
+        3. Endpoint will validate the input data and will call the service 
+        4. The service will contain the business logic. 
+
 ## Kit CLI Commands 
  
     - Generate new services with HTTP endpoints: 
@@ -24,7 +36,7 @@
 ## gRPC / Protobuf 
 
     - Install: 
-        * curl -OL https://github.com/google/protobuf/releases/download/v3.2.0/protoc-3.2.0-linux-x86_64.zip
+        * curl -OL https://github.com/google/protobuf/releases/download/v3.6.1/protoc-3.6.1-linux-x86_64.zip
         * unzip protoc-3.6.1-linux-x86_64.zip -d protoc3
         * sudo mv protoc3/bin/* /usr/local/bin/
         * sudo mv protoc3/include/* /usr/local/include/
