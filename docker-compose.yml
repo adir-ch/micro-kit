@@ -4,34 +4,44 @@ services:
     build:
       context: .
       dockerfile: add/Dockerfile
-    restart: always
-    volumes:
-    - .:/go/src/github.com/adir-ch/micro-kit
     container_name: add
     ports:
     - 8800:8081
+    restart: always
+    volumes:
+    - .:/go/src/github.com/adir-ch/micro-kit
   calc:
     build:
       context: .
       dockerfile: calc/Dockerfile
-    restart: always
-    volumes:
-    - .:/go/src/github.com/adir-ch/micro-kit
     container_name: calc
     ports:
     - 8801:8081
-  etcd:
-    image: 'quay.io/coreos/etcd:v3.1.7'
     restart: always
-    ports:
-        - '23791:2379'
-        - '23801:2380'
+    volumes:
+    - .:/go/src/github.com/adir-ch/micro-kit
+  etcd:
     environment:
-        ETCD_NAME: infra
-        ETCD_INITIAL_ADVERTISE_PEER_URLS: 'http://etcd:2380'
-        ETCD_INITIAL_CLUSTER: infra=http://etcd:2380
-        ETCD_INITIAL_CLUSTER_STATE: new
-        ETCD_INITIAL_CLUSTER_TOKEN: secrettoken
-        ETCD_LISTEN_CLIENT_URLS: 'http://etcd:2379,http://localhost:2379'
-        ETCD_LISTEN_PEER_URLS: 'http://etcd:2380'
-        ETCD_ADVERTISE_CLIENT_URLS: 'http://etcd:2379'
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://etcd:2380
+      ETCD_INITIAL_CLUSTER: infra=http://etcd:2380
+      ETCD_INITIAL_CLUSTER_STATE: new
+      ETCD_INITIAL_CLUSTER_TOKEN: secrettoken
+      ETCD_LISTEN_CLIENT_URLS: http://etcd:2379,http://localhost:2379
+      ETCD_LISTEN_PEER_URLS: http://etcd:2380
+      ETCD_NAME: infra
+    image: quay.io/coreos/etcd:v3.1.7
+    ports:
+    - 23791:2379
+    - 23801:2380
+    restart: always
+  sub:
+    build:
+      context: .
+      dockerfile: sub/Dockerfile
+    restart: always
+    volumes:
+    - .:/go/src/github.com/adir-ch/micro-kit
+    container_name: sub
+    ports:
+    - 8802:8082
