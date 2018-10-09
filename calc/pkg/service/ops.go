@@ -42,7 +42,7 @@ func callOp(op string, numbers []float64) (float64, error) {
 		return 0, err
 	}
 
-	return svc.Client(svcreq{numbers}, fmt.Sprintf("http://%s/calc", srvURI))
+	return svc.Client(svcreq{numbers}, srvURI)
 }
 
 func discover(name string) (string, error) {

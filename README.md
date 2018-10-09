@@ -13,7 +13,7 @@
         3. Endpoint will validate the input data and will call the service 
         4. The service will contain the business logic. 
 
-## Kit CLI Commands 
+## Kit CLI commands 
  
     - Generate new services with HTTP endpoints: 
         1. # kit new service <service-name>
@@ -27,7 +27,17 @@
     - Generate Docerfile and docker compose files
         # kit generate docker - will generate a docker compose file 
 
+## Docker compose commands 
+
+    - docker-compose ps - show all composed images 
+
     - docker-compose up - will run the docker images 
+
+    - Build composed package: 
+        # docker-compose build --force-rm --no-cache <image name>
+
+    - Remove composed image 
+        # docker-compose rm <image name>
 
     - Send data to the services: 
         Calc FE: curl -s -d '{"expr": "1 + 1"}' -X POST localhost:8800/calculate

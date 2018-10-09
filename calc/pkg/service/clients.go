@@ -15,16 +15,17 @@ import (
 	"google.golang.org/grpc"
 )
 
-type ClientFunc func(data interface{}, uri string) (float64, error)
+type ClientFunc func(data interface{}, svcURL string) (float64, error)
 
-func httpSend(data interface{}, uri string) (float64, error) {
-	log.Printf("sending HTTP op request to uri: %s", uri)
+func httpSend(data interface{}, svcURL string) (float64, error) {
+	log.Printf("sending HTTP op request to svcURL: %s", svcURL)
 	dataBytes, err := json.Marshal(data)
 	if err != nil {
 		return 0, err
 	}
 
-	req, err := http.NewRequest("POST", uri, bytes.NewBuffer(dataBytes))
+	url := fmt.Sprintf("http://%s/calc", svcURL)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(dataBytes))
 
 	if err != nil {
 		return 0, err
@@ -41,12 +42,12 @@ func httpSend(data interface{}, uri string) (float64, error) {
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return 0, fmt.Errorf("response status error from %s: %d", uri, res.StatusCode)
+		return 0, fmt.Errorf("response status error from %s: %d", svcURL, res.StatusCode)
 	}
 
 	var result svcres
 	if info, err := readAndParseJSON(res.Body, &result); err != nil {
-		return 0, fmt.Errorf("unable to decode response from %s: %s (%s)", uri, info, err)
+		return 0, fmt.Errorf("unable to decode response from %s: %s (%s)", svcURL, info, err)
 	}
 
 	return result.Rs, result.Err
@@ -61,22 +62,22 @@ func readAndParseJSON(body io.ReadCloser, dest interface{}) (string, error) {
 	return "", nil
 }
 
-func grpcSendSub(data interface{}, uri string) (float64, error) {
-	log.Printf("sending gRPC op request to uri: %s", uri)
+func grpcSendSub(data interface{}, svcURL string) (float64, error) {
+	log.Printf("sending gRPC op request to svcURL: %s", svcURL)
 
-	req := data.([]float64)
-	if len(req) < 2 {
-		return 0, fmt.Errorf("illegal input data len received: %d", len(req))
+	req := data.(svcreq)
+	if len(req.Numbers) < 2 {
+		return 0, fmt.Errorf("illegal input data len received: %d", len(req.Numbers))
 	}
 
-	conn, err := grpc.Dial(uri, grpc.WithInsecure())
+	conn, err := grpc.Dial(fmt.Sprintf("%s", svcURL), grpc.WithInsecure())
 	if err != nil {
-		log.Printf("unable to connect to: %s, err: %s", uri, err.Error())
+		log.Printf("unable to connect to: %s, err: %s", svcURL, err.Error())
 		return 0, err
 	}
 
 	client := subpb.NewSubClient(conn)
-	rs, err := client.Sub(context.Background(), &subpb.SubReqest{Left: req[0], Right: req[1]})
+	rs, err := client.Sub(context.Background(), &subpb.SubRequest{Left: req.Numbers[0], Right: req.Numbers[1]})
 	if err != nil {
 		return 0, err
 	}
