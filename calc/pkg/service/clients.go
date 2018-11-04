@@ -11,7 +11,9 @@ import (
 	"net/http"
 	"time"
 
+	mulep "github.com/adir-ch/micro-kit/mul/pkg/endpoint"
 	subpb "github.com/adir-ch/micro-kit/sub/pkg/grpc/pb"
+	nats "github.com/nats-io/go-nats"
 	"google.golang.org/grpc"
 )
 
@@ -83,4 +85,35 @@ func grpcSendSub(data interface{}, svcURL string) (float64, error) {
 	}
 
 	return rs.Result, nil
+}
+
+func reqRepSendMul(data interface{}, svcURL string) (float64, error) {
+	log.Printf("sending NATS req-rep op request to broker on: %s", nats.DefaultURL)
+
+	req := data.(svcreq)
+	if len(req.Numbers) < 2 {
+		return 0, fmt.Errorf("illegal input data len received: %d", len(req.Numbers))
+	}
+
+	nc, err := nats.Connect("nats://nats:4222")
+	if err != nil {
+		return 0, fmt.Errorf("unable to connect to NATS broker")
+	}
+
+	r, err := json.Marshal(req)
+	if err != nil {
+		return 0, fmt.Errorf("unable to marshal data into byte: %d", len(req.Numbers))
+	}
+
+	defer nc.Close()
+	rs, err := nc.Request("mul", r, 500*time.Millisecond)
+	if err != nil || nc.LastError() != nil {
+		return 0, fmt.Errorf("Error in NATS Request: %s (last: %v)", err, nc.LastError())
+	}
+
+	var result mulep.MulResponse
+	if err := json.Unmarshal(rs.Data, &result); err != nil {
+		return 0, fmt.Errorf("unable to unmarshal service response: %s", err)
+	}
+	return result.Rs, result.Err
 }

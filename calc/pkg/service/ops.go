@@ -18,7 +18,7 @@ var registry = "http://etcd:2379" // TODO: take from config
 var ops = map[string]OpService{ // TODO: take from config
 	"+": OpService{"services/add/", httpSend},
 	"-": OpService{"services/sub/", grpcSendSub},
-	"*": OpService{"services/mul/", httpSend},
+	"*": OpService{"", reqRepSendMul},
 	"/": OpService{"services/div/", httpSend},
 }
 
@@ -37,9 +37,13 @@ func callOp(op string, numbers []float64) (float64, error) {
 		return 0, fmt.Errorf("unable to find service for op: %s", op)
 	}
 
-	srvURI, err := discover(svc.Name)
-	if err != nil {
-		return 0, err
+	srvURI := ""
+	var err error
+	if svc.Name != "" {
+		srvURI, err = discover(svc.Name)
+		if err != nil {
+			return 0, err
+		}
 	}
 
 	return svc.Client(svcreq{numbers}, srvURI)

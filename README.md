@@ -29,9 +29,11 @@
 
 ## Docker compose commands 
 
-    - docker-compose ps - show all composed images 
-
-    - docker-compose up - will run the docker images 
+    - Starting / View a service/s
+        # docker-compose ps - show all composed images 
+        # docker-compose up - will run the docker images 
+        # docker-compose up <service name> - will run the docker image of a specific service 
+        # docker-compose up -d <service name> - will run the docker image of a specific service in the background
 
     - Build composed package: 
         # docker-compose build --force-rm --no-cache <image name>
